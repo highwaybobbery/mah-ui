@@ -1,3 +1,7 @@
-input {
+#login {
+  margin-top: 5px;
+}
+
+#login input {
   margin-left: 10px;
 }

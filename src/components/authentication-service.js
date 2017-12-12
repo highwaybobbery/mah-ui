@@ -1,5 +1,5 @@
 import decode from 'jwt-decode';
-export default class AuthService {
+class AuthenticationService {
     // Initializing important variables
     constructor(domain) {
         this.domain = domain || 'http://localhost:3001' // API server domain
@@ -95,3 +95,5 @@ export default class AuthService {
         }
     }
 }
+
+export default AuthenticationService;
