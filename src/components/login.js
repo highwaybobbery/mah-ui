@@ -5,10 +5,11 @@ import AuthService from './auth-service';
 class Login extends Component {
     constructor(props){
         super(props);
-        this.onAuthorize = this.props.onAuthorize;
+        this.onAuthorize = props.onAuthorize;
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.Auth = new AuthService();
+        this.state = {username: props.username || '', rememberUsername: props.rememberUsername, password: ''};
     }
     render() {
         return (
@@ -20,6 +21,7 @@ class Login extends Component {
                             className="form-item"
                             placeholder="Username"
                             name="username"
+                            value={this.state.username}
                             type="text"
                             onChange={this.handleChange}
                         />
@@ -28,6 +30,7 @@ class Login extends Component {
                             placeholder="Password"
                             name="password"
                             type="password"
+                            value={this.state.password}
                             onChange={this.handleChange}
                         />
                         <input
@@ -35,16 +38,27 @@ class Login extends Component {
                             value="Login"
                             type="submit"
                         />
+                        <input
+                          type="checkbox"
+                          value="true"
+                          name="rememberUsername"
+                          checked={this.state.rememberUsername}
+                          onChange={this.handleChange}
+                        />
+                    <label htmlFor="rememberUsername">Remember username?</label>
                     </form>
                 </div>
             </div>
         );
     }
 
-    handleChange(e){
+    handleChange({target}){
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+
+
         this.setState(
             {
-                [e.target.name]: e.target.value
+                [target.name]: value
             }
         )
     }
@@ -55,11 +69,14 @@ class Login extends Component {
         this.Auth.login(this.state.username,this.state.password)
             .then(res =>{
                 console.log('calling onAuthorize callback');
-                this.onAuthorize(true);
-               //this.props.history.replace('/');
+                this.onAuthorize({
+                  loggedIn: true,
+                  username: this.state.username,
+                  rememberUsername: this.state.rememberUsername
+                });
             })
             .catch(err =>{
-                alert(err);
+                console.warn(err);
             })
     }
 }

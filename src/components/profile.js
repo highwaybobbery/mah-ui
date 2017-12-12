@@ -12,7 +12,7 @@ class Profile extends Component {
     render() {
         return (
             <div>
-                Signed in as {this.props.username} |
+                Signed in as {this.props.username}
                 <button onClick={this.doLogout}>Log out</button>
             </div>
         )
@@ -20,7 +20,7 @@ class Profile extends Component {
 
     doLogout() {
       this.authService.logout();
-      this.onLogout(false);
+      this.onLogout({loggedIn: false, rememberUsername: this.props.rememberUsername});
     }
 }
 

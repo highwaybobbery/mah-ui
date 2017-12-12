@@ -9,18 +9,32 @@ class App extends Component {
   constructor(props) {
     super(props)
     this.setLoginState = this.setLoginState.bind(this)
+    this.getUsermame = this.getUsername.bind(this)
+    this.setUsermame = this.setUsername.bind(this)
     this.authService = new AuthService();
-    this.state = { loggedIn: this.authService.loggedIn() };
+    this.state = { loggedIn: this.authService.loggedIn(), username: this.getUsername(),
+      rememberUsername: this.getRememberUsername(),
+    };
   }
 
   render() {
-    console.log('App.render');
-    console.log(this.state);
     let profile;
     if(this.state.loggedIn) {
-      profile = <Profile onLogout={this.setLoginState} />;
+      profile = (
+        <Profile
+          onLogout={this.setLoginState}
+          username={this.state.username}
+          rememberUsername={this.state.rememberUsername}
+        />
+      )
     } else {
-      profile = <Login onAuthorize={this.setLoginState} />;
+      profile = (
+        <Login
+          onAuthorize={this.setLoginState}
+          username={this.state.username}
+          rememberUsername={this.state.rememberUsername}
+        />
+      )
     }
     return (
       <div className="App">
@@ -36,8 +50,35 @@ class App extends Component {
     );
   }
 
-  setLoginState(loggedIn) {
-    this.setState({loggedIn});
+  setLoginState(props) {
+    if(props.loggedIn) {
+      this.setUsername(props.username, props.rememberUsername);
+    } else {
+      if(props.rememberUsername === false) {
+        this.clearUsername();
+      }
+    }
+    this.setState({loggedIn: props.loggedIn})
+  }
+
+  getUsername() {
+    return localStorage.getItem('username');
+  }
+
+  getRememberUsername() {
+    // ensure rememberUsername is returned as boolean
+    return localStorage.getItem('rememberUsername') === 'true';
+  }
+
+  setUsername(username, rememberUsername) {
+    localStorage.setItem('username', username);
+    localStorage.setItem('rememberUsername', rememberUsername);
+    this.setState({username, rememberUsername});
+  }
+
+  clearUsername(username) {
+    localStorage.removeItem('username');
+    this.setState({username});
   }
 }
 
